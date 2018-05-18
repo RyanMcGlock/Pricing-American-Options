@@ -1,6 +1,6 @@
 # Pricing-American-Options
 ##### Pricing American Options using the False Position Method
-##### Apple Stock was taken, with a time step of one month for 5 periods.
+##### Apple Stock (dividened included - schedule in Excel sheet) was taken, with a time step of one month for 5 periods.
 ##### The options were priced using implied volatility trees (IVT) which followed a Derman and Kani Approach.
 ##### Firstly a CRR tree was calculated, secondly a Derman and Kani IVT for Apple stock on European Options and lastly the Derman and Kani for American. A False position method was used (similiar to bisection method) to get around the problem of early exercise in American Option.
 
