@@ -4,7 +4,7 @@
 ##### The options were priced using implied volatility trees (IVT) which followed a Derman and Kani Approach.
 ##### Firstly a CRR tree was calculated, secondly a Derman and Kani IVT for Apple stock on European Options and lastly the Derman and Kani for American. A False position method was used (similiar to bisection method) to get around the problem of early exercise in American Option.
 
-##### Below is the VBA code used for the False Position Method.
+##### Below is the VBA code used for the False Position Method:
 ```VBA
 Public Function FP(Pam As Double, sigmaEUR As Double, sigmaAMR As Double, lamda As Double)
 'Declare Variables
@@ -53,5 +53,59 @@ If VBA.Round(PV0, 1) = 0 Then
          FP = V2
      End If
  End If
+End Function
+```
+##### To attain the implied volatilities for the option needed to be priced, Bi-Linear Interpolation was used, whereby using strike and maturties above and below the option being priced. The VBA code below can be used:
+```VBA
+Function BInt(iopt, i, K, Tp1, rngtm1 As Range, rngtp1 As Range)
+'t-1
+indexuptm1 = 3
+Kuptm1 = 0
+Kdowntm1 = 0
+    For Each elem In rngtm1
+    indexuptm1 = indexuptm1 + 1
+        If elem.Value > K Then
+            Kuptm1 = elem.Value
+            Exit For
+        End If
+        Kdowntm1 = elem.Value
+    Next
+    indexdowntm1 = indexuptm1 - 1
+
+'t+1
+indexuptp1 = 3
+Kuptp1 = 0
+Kdowntp1 = 0
+    For Each elem In rngtp1
+    indexuptp1 = indexuptp1 + 1
+        If elem.Value > K Then
+            Kuptp1 = elem.Value
+            Exit For
+        End If
+        Kdowntp1 = elem.Value
+    Next
+    indexdowntp1 = indexuptp1 - 1
+
+    If iopt = 1 Then
+        voldowntm1 = (Sheets(i).Cells(indexdowntm1, 6).Value) / 100
+        voluptm1 = (Sheets(i).Cells(indexuptm1, 6).Value) / 100
+        voldowntp1 = (Sheets(i + 2).Cells(indexdowntp1, 6).Value) / 100
+        voluptp1 = (Sheets(i + 2).Cells(indexuptp1, 6).Value) / 100
+    ElseIf iopt = -1 Then
+        voldowntm1 = (Sheets(i).Cells(indexdowntm1, 14).Value) / 100
+        voluptm1 = (Sheets(i).Cells(indexuptm1, 14).Value) / 100
+        voldowntp1 = (Sheets(i + 2).Cells(indexdowntp1, 14).Value) / 100
+        voluptp1 = (Sheets(i + 2).Cells(indexuptp1, 14).Value) / 100
+    End If
+    
+    Tm1 = 0
+    T = 1 / 12
+    'NOTE THESE ARE THE FORMULA NEEDED FOR BI_LINEAR INTERPOLATION
+    a = (T - Tm1) / (Tp1 - Tm1)
+    b = (K - Kdowntm1) / (Kuptm1 - Kdowntm1)
+    
+    imvol = (1 - a) * (1 - b) * voldowntm1 + a * (1 - b) * voldowntp1 + a * b * voluptp1 + b * (1 - a) * voluptm1
+    BInt = imvol
+    
 End Function
 ```
