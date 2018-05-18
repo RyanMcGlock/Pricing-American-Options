@@ -5,6 +5,7 @@
 ##### Firstly a CRR tree was calculated, secondly a Derman and Kani IVT for Apple stock on European Options and lastly the Derman and Kani for American. A False position method was used (similiar to bisection method) to get around the problem of early exercise in American Option.
 
 ##### Below is the VBA code used for the False Position Method.
+```VBA
 Public Function FP(Pam As Double, sigmaEUR As Double, sigmaAMR As Double, lamda As Double)
 'Declare Variables
  Dim V0 As Double
@@ -53,3 +54,4 @@ If VBA.Round(PV0, 1) = 0 Then
      End If
  End If
 End Function
+```
